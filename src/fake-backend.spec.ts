@@ -20,10 +20,7 @@ export class GithubService {
     let options = new RequestOptions({ headers });
 
     return this.http
-      .post(
-        'https://blacksonic.eu.auth0.com.auth0.com/usernamepassword/login',
-        { username, password, client_id: 'YOUR_CLIENT_ID' }, options
-      )
+      .post('usernamepassword/login', { username, password }, options)
       .map((response: Response) => response.text());
   }
 }
@@ -57,9 +54,7 @@ describe('GithubServiceRefactored', () => {
   });
 
   it('should get profile data of user', (done) => {
-    backend
-      .expectGET('users/blacksonic')
-      .respond(profileInfo);
+    backend.expectGET('users/blacksonic').respond(profileInfo);
 
     subject.getProfile('blacksonic').subscribe((response) => {
       expect(response).toEqual(profileInfo);
@@ -69,12 +64,8 @@ describe('GithubServiceRefactored', () => {
 
   it('should be called with proper arguments', (done) => {
     backend.expectPost(
-      'https://blacksonic.eu.auth0.com.auth0.com/usernamepassword/login',
-      {
-        username: 'blacksonic',
-        password: 'secret',
-        client_id: 'YOUR_CLIENT_ID'
-      },
+      'usernamepassword/login',
+      { username: 'blacksonic', password: 'secret' },
       { 'Content-Type': 'application/json' }
     ).respond(responseForm);
 
