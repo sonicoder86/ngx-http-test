@@ -1,3 +1,4 @@
 .idea
-*.ts
+src/*.ts
+index.ts
 node_modules
