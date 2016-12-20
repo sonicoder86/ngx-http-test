@@ -1,11 +1,12 @@
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-import { MockBackend } from '@angular/http/testing';
-import { Http, BaseRequestOptions, RequestMethod, Headers } from '@angular/http';
-import { BackendExpectation } from './backend-expectation';
+var testing_1 = require("@angular/http/testing");
+var http_1 = require("@angular/http");
+var backend_expectation_1 = require("./backend-expectation");
 var FakeBackend = (function (_super) {
     __extends(FakeBackend, _super);
     function FakeBackend() {
@@ -24,13 +25,13 @@ var FakeBackend = (function (_super) {
     FakeBackend.getProviders = function () {
         return [
             FakeBackend,
-            BaseRequestOptions,
+            http_1.BaseRequestOptions,
             {
-                provide: Http,
+                provide: http_1.Http,
                 useFactory: function (backend, defaultOptions) {
-                    return new Http(backend, defaultOptions);
+                    return new http_1.Http(backend, defaultOptions);
                 },
-                deps: [FakeBackend, BaseRequestOptions]
+                deps: [FakeBackend, http_1.BaseRequestOptions]
             }
         ];
     };
@@ -42,38 +43,38 @@ var FakeBackend = (function (_super) {
             url: url,
             method: method,
             body: body,
-            headers: new Headers(headers)
+            headers: new http_1.Headers(headers)
         });
     };
     FakeBackend.prototype.expectGET = function (url, headers) {
         return this._addExpectation({
             url: url,
-            method: RequestMethod.Get,
-            headers: new Headers(headers)
+            method: http_1.RequestMethod.Get,
+            headers: new http_1.Headers(headers)
         });
     };
     FakeBackend.prototype.expectPost = function (url, body, headers) {
         return this._addExpectation({
             url: url,
-            method: RequestMethod.Post,
+            method: http_1.RequestMethod.Post,
             body: body,
-            headers: new Headers(headers)
+            headers: new http_1.Headers(headers)
         });
     };
     FakeBackend.prototype.expectPut = function (url, body, headers) {
         return this._addExpectation({
             url: url,
-            method: RequestMethod.Put,
+            method: http_1.RequestMethod.Put,
             body: body,
-            headers: new Headers(headers)
+            headers: new http_1.Headers(headers)
         });
     };
     FakeBackend.prototype.expectDelete = function (url, body, headers) {
         return this._addExpectation({
             url: url,
-            method: RequestMethod.Delete,
+            method: http_1.RequestMethod.Delete,
             body: body,
-            headers: new Headers(headers)
+            headers: new http_1.Headers(headers)
         });
     };
     FakeBackend.prototype.flush = function () {
@@ -83,7 +84,7 @@ var FakeBackend = (function (_super) {
         });
     };
     FakeBackend.prototype._addExpectation = function (options) {
-        var expectation = new BackendExpectation(options);
+        var expectation = new backend_expectation_1.BackendExpectation(options);
         this._expectations.push(expectation);
         return expectation;
     };
@@ -91,6 +92,6 @@ var FakeBackend = (function (_super) {
         this._expectations[order].verify(this._connections[order]);
     };
     return FakeBackend;
-}(MockBackend));
-export { FakeBackend };
+}(testing_1.MockBackend));
+exports.FakeBackend = FakeBackend;
 //# sourceMappingURL=fake-backend.js.map

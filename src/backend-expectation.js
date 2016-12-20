@@ -1,4 +1,5 @@
-import { Response, ResponseOptions, Headers } from '@angular/http';
+"use strict";
+var http_1 = require("@angular/http");
 function stringifyBody(body) {
     return typeof body === 'string'
         ? body
@@ -14,7 +15,7 @@ var BackendExpectation = (function () {
     };
     BackendExpectation.prototype.respond = function (body, status, headers) {
         if (status === void 0) { status = 200; }
-        this.responseOptions = new ResponseOptions({ status: status, body: body, headers: new Headers(headers) });
+        this.responseOptions = new http_1.ResponseOptions({ status: status, body: body, headers: new http_1.Headers(headers) });
     };
     BackendExpectation.prototype.respondWithError = function (error) {
         this.responseError = typeof error === 'string' ? new Error(error) : error;
@@ -31,7 +32,7 @@ var BackendExpectation = (function () {
             expect(connection.request.headers.get(name)).toEqual(_this.options.headers.get(name), 'Request header mismatch.');
         });
         if (!this.responseError) {
-            connection.mockRespond(new Response(this.responseOptions));
+            connection.mockRespond(new http_1.Response(this.responseOptions));
         }
         else {
             connection.mockError(this.responseError);
@@ -39,5 +40,5 @@ var BackendExpectation = (function () {
     };
     return BackendExpectation;
 }());
-export { BackendExpectation };
+exports.BackendExpectation = BackendExpectation;
 //# sourceMappingURL=backend-expectation.js.map
