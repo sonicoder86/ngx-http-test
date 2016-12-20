@@ -2,10 +2,10 @@
   "name": "angular2-http-testing",
   "version": "1.0.3",
   "description": "Angular 2 Http testing helper library",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
+  "main": "index.js",
+  "module": "index.js",
   "scripts": {
-    "cleanup": "rimraf dist",
+    "cleanup": "rimraf src/*.js src/*.map index.js index.js.map",
     "deploy": "np --skip-cleanup",
     "generate": "npm run cleanup && npm run transpile",
     "transpile": "tsc",

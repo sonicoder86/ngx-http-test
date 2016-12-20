@@ -1,4 +1,2 @@
 .idea
-src/*.ts
-index.ts
 node_modules
