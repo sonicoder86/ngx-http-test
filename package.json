@@ -27,12 +27,12 @@
     "@angular/http": "^2.0.0"
   },
   "devDependencies": {
-    "@angular/common": "2.3.1",
-    "@angular/compiler": "2.3.1",
-    "@angular/core": "2.3.1",
-    "@angular/http": "2.3.1",
-    "@angular/platform-browser": "2.3.1",
-    "@angular/platform-browser-dynamic": "2.3.1",
+    "@angular/common": "2.4.0",
+    "@angular/compiler": "2.4.0",
+    "@angular/core": "2.4.0",
+    "@angular/http": "2.4.0",
+    "@angular/platform-browser": "2.4.0",
+    "@angular/platform-browser-dynamic": "2.4.0",
     "@types/jasmine": "2.5.38",
     "@types/node": "6.0.52",
     "awesome-typescript-loader": "3.0.0-beta.17",
@@ -45,10 +45,10 @@
     "karma-webpack": "1.8.0",
     "np": "2.11.0",
     "rimraf": "2.5.4",
-    "rxjs": "5.0.0-rc.4",
+    "rxjs": "5.0.1",
     "typescript": "2.1.4",
     "webpack": "2.1.0-beta.27",
-    "zone.js": "0.7.2"
+    "zone.js": "0.7.4"
   },
   "author": {
     "name": "blacksonic",
