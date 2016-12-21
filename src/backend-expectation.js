@@ -31,12 +31,14 @@ var BackendExpectation = (function () {
         this.options.headers.forEach(function (values, name) {
             expect(connection.request.headers.get(name)).toEqual(_this.options.headers.get(name), 'Request header mismatch.');
         });
-        if (!this.responseError) {
-            connection.mockRespond(new http_1.Response(this.responseOptions));
+        if (this.responseError) {
+            return connection.mockError(this.responseError);
         }
-        else {
-            connection.mockError(this.responseError);
+        if (!this.responseOptions) {
+            var responseOptions = new http_1.ResponseOptions({ status: 200, body: '' });
+            return connection.mockRespond(new http_1.Response(responseOptions));
         }
+        connection.mockRespond(new http_1.Response(this.responseOptions));
     };
     return BackendExpectation;
 }());

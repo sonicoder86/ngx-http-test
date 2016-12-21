@@ -47,10 +47,15 @@ export class BackendExpectation {
       expect(connection.request.headers.get(name)).toEqual(this.options.headers.get(name), 'Request header mismatch.');
     });
 
-    if (!this.responseError) {
-      connection.mockRespond(new Response(this.responseOptions));
-    } else {
-      connection.mockError(this.responseError);
+    if (this.responseError) {
+      return connection.mockError(this.responseError);
     }
+
+    if (!this.responseOptions) {
+      let responseOptions = new ResponseOptions({ status: 200, body: '' });
+      return connection.mockRespond(new Response(responseOptions));
+    }
+
+    connection.mockRespond(new Response(this.responseOptions));
   }
 }

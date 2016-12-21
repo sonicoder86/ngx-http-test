@@ -50,6 +50,8 @@ backend
   .respond(responseBody, responseStatus, responseHeaders);
 ```
 
+It is not necessary to give the response, in that case the backend will respond with 200 empty response.
+
 For requests outside of GET the request body can be also specified.
 
 ```typescript
@@ -70,4 +72,20 @@ afterEach(() => {
   backend.verifyNoPendingRequests();
   backend.verifyNoPendingExpectations();
 });
+```
+
+By default expectations get verified instantly, but this can be switched off and do the verification by hand.
+
+```typescript
+it('should call fake endpoint', (done) => {
+  backend.setAutoRespond(false);
+  backend.expectGET('users/blacksonic').respond({ username: 'blacksonic' });
+  
+  subject.getProfile('blacksonic').subscribe((response) => {
+    expect(response).toEqual({ username: 'blacksonic' });
+    done();
+  });
+  
+  backend.flush();
+})
 ```

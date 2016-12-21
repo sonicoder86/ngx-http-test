@@ -23,6 +23,12 @@ export class GithubService {
       .post('usernamepassword/login', { username, password }, options)
       .map((response: Response) => response.text());
   }
+
+  logout() {
+    return this.http
+      .post('usernamepassword/logout', '')
+      .map((response: Response) => response.text());
+  }
 }
 
 describe('GithubServiceRefactored', () => {
@@ -50,7 +56,7 @@ describe('GithubServiceRefactored', () => {
   }));
 
   it('should get profile data of user', (done) => {
-    backend.expectGET('users/blacksonic').respond(profileInfo);
+    backend.expectGet('users/blacksonic').respond(profileInfo);
 
     subject.getProfile('blacksonic').subscribe((response) => {
       expect(response).toEqual(profileInfo);
@@ -113,5 +119,14 @@ describe('GithubServiceRefactored', () => {
     } catch(e) {
       expect(e.message).toEqual('Pending connections found: 1');
     }
+  });
+
+  it('should respond when no response is given', (done) => {
+    backend.expectPost('usernamepassword/logout');
+
+    subject.logout().subscribe((response: string) => {
+      expect(response).toEqual('');
+      done();
+    });
   });
 });
