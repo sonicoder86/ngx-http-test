@@ -1,6 +1,10 @@
-# angular2-http-testing
+# ngx-http-test
+[![Build Status](https://travis-ci.org/blacksonic/ngx-http-test.svg?branch=master)](https://travis-ci.org/blacksonic/ngx-http-test)
+[![Dependency Status](https://david-dm.org/blacksonic/ngx-http-test.svg)](https://david-dm.org/blacksonic/ngx-http-test)
+[![devDependency Status](https://david-dm.org/blacksonic/ngx-http-test/dev-status.svg)](https://david-dm.org/blacksonic/ngx-http-test?type=dev)
+[![peerDependency Status](https://david-dm.org/blacksonic/ngx-http-test/peer-status.svg)](https://david-dm.org/blacksonic/ngx-http-test?type=peer)
 
-Makes testing Http calls as easy as were with AngularJS.
+Makes testing Http calls in Angular 2 as easy as were in AngularJS.
 
 ### Installation
 
@@ -92,5 +96,4 @@ it('should call fake endpoint', (done) => {
 })
 ```
 
-The ```flush``` method resolves all pending connections.
-It can also be resolved one by one with the ```flushNext``` method.
+The ```flush``` method resolves all pending connections. It can also be resolved one by one with the ```flushNext``` method.
