@@ -49,10 +49,6 @@ describe('GithubServiceRefactored', () => {
     backend = fakeBackend;
   }));
 
-  afterEach(() => {
-    backend.verifyNoPendingRequests();
-  });
-
   it('should get profile data of user', (done) => {
     backend.expectGET('users/blacksonic').respond(profileInfo);
 
@@ -73,5 +69,49 @@ describe('GithubServiceRefactored', () => {
       expect(response).toEqual(responseForm);
       done();
     });
+  });
+
+  it('should not respond automatically when turned off', (done) => {
+    backend.setAutoRespond(false);
+    backend.expectPost(
+      'usernamepassword/login',
+      { username: 'blacksonic', password: 'secret' },
+      { 'Content-Type': 'application/json' }
+    ).respond(responseForm);
+
+    subject.login('blacksonic', 'secret').subscribe((response) => {
+      expect(response).toEqual(responseForm);
+      done();
+    });
+
+    backend.flush();
+  });
+
+  it('should verify pending expectations', () => {
+    backend.expectPost(
+      'usernamepassword/login',
+      { username: 'blacksonic', password: 'secret' },
+      { 'Content-Type': 'application/json' }
+    ).respond(responseForm);
+
+    try {
+      backend.verifyNoPendingEpectations();
+      throw new Error('should throw');
+    } catch(e) {
+      expect(e.message).toEqual('Pending expectations found: 1');
+    }
+  });
+
+  it('should verify pending connections', () => {
+    backend.setAutoRespond(false);
+
+    subject.login('blacksonic', 'secret').subscribe(() => {});
+
+    try {
+      backend.verifyNoPendingRequests();
+      throw new Error('should throw');
+    } catch(e) {
+      expect(e.message).toEqual('Pending connections found: 1');
+    }
   });
 });

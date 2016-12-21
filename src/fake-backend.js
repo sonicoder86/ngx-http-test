@@ -77,11 +77,45 @@ var FakeBackend = (function (_super) {
             headers: new http_1.Headers(headers)
         });
     };
+    FakeBackend.prototype.expectPatch = function (url, body, headers) {
+        return this._addExpectation({
+            url: url,
+            method: http_1.RequestMethod.Patch,
+            body: body,
+            headers: new http_1.Headers(headers)
+        });
+    };
+    FakeBackend.prototype.expectHead = function (url, headers) {
+        return this._addExpectation({
+            url: url,
+            method: http_1.RequestMethod.Head,
+            headers: new http_1.Headers(headers)
+        });
+    };
+    FakeBackend.prototype.expectOptions = function (url, headers) {
+        return this._addExpectation({
+            url: url,
+            method: http_1.RequestMethod.Options,
+            headers: new http_1.Headers(headers)
+        });
+    };
     FakeBackend.prototype.flush = function () {
         var _this = this;
         this._connections.forEach(function (connection, order) {
             _this._verifyExpectation(order);
         });
+    };
+    FakeBackend.prototype.verifyNoPendingEpectations = function () {
+        var notVerifiedExpectations = this._expectations.filter(function (expectation) { return !expectation.getIsVerified(); });
+        if (notVerifiedExpectations.length > 0) {
+            throw new Error("Pending expectations found: " + notVerifiedExpectations.length);
+        }
+    };
+    FakeBackend.prototype.verifyNoPendingRequests = function () {
+        var notVerifiedConnections = this._connections.filter(function (connection) { return connection.readyState === http_1.ReadyState.Open; });
+        if (notVerifiedConnections.length > 0) {
+            throw new Error("Pending connections found: " + notVerifiedConnections.length);
+        }
     };
     FakeBackend.prototype._addExpectation = function (options) {
         var expectation = new backend_expectation_1.BackendExpectation(options);
@@ -89,6 +123,9 @@ var FakeBackend = (function (_super) {
         return expectation;
     };
     FakeBackend.prototype._verifyExpectation = function (order) {
+        if (!this._expectations[order]) {
+            throw new Error('No expectation to fulfill');
+        }
         this._expectations[order].verify(this._connections[order]);
     };
     return FakeBackend;

@@ -61,4 +61,13 @@ backend.expectPost(
 ```
 
 Convenience methods available for different kind of requests: 
-```expectGet```, ```expectPost```, ```expectDelete```, ```expectPut```.
+```expectGet```, ```expectPost```, ```expectDelete```, ```expectPut```, ```expectPatch```, ```expectHead```, ```expectOptions```.
+
+After the tests run it is possible to check for outstanding connections or expectations that are not addressed.
+
+```typescript
+afterEach(() => {
+  backend.verifyNoPendingRequests();
+  backend.verifyNoPendingExpectations();
+});
+```

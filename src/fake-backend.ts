@@ -1,5 +1,5 @@
 import { MockBackend, MockConnection } from '@angular/http/testing';
-import { Http, BaseRequestOptions, RequestMethod, Headers } from '@angular/http';
+import { Http, BaseRequestOptions, RequestMethod, Headers, ReadyState } from '@angular/http';
 import { Provider } from '@angular/core';
 import { BackendExpectation, BackendExpectationOptions } from './backend-expectation';
 
@@ -82,10 +82,51 @@ export class FakeBackend extends MockBackend {
     });
   }
 
+  expectPatch(url: string, body?: string | Object, headers?: Headers | { [name: string]: any; }) {
+    return this._addExpectation({
+      url,
+      method: RequestMethod.Patch,
+      body,
+      headers: new Headers(headers)
+    });
+  }
+
+  expectHead(url: string, headers?: Headers | { [name: string]: any; }) {
+    return this._addExpectation({
+      url,
+      method: RequestMethod.Head,
+      headers: new Headers(headers)
+    });
+  }
+
+  expectOptions(url: string, headers?: Headers | { [name: string]: any; }) {
+    return this._addExpectation({
+      url,
+      method: RequestMethod.Options,
+      headers: new Headers(headers)
+    });
+  }
+
   flush() {
     this._connections.forEach((connection, order) => {
       this._verifyExpectation(order);
     });
+  }
+
+  public verifyNoPendingEpectations() {
+    let notVerifiedExpectations = this._expectations.filter((expectation: BackendExpectation) => !expectation.getIsVerified());
+
+    if (notVerifiedExpectations.length > 0) {
+      throw new Error(`Pending expectations found: ${notVerifiedExpectations.length}`);
+    }
+  }
+
+  public verifyNoPendingRequests() {
+    let notVerifiedConnections = this._connections.filter((connection: MockConnection) => connection.readyState === ReadyState.Open);
+
+    if (notVerifiedConnections.length > 0) {
+      throw new Error(`Pending connections found: ${notVerifiedConnections.length}`);
+    }
   }
 
   private _addExpectation(options: BackendExpectationOptions) {
@@ -95,6 +136,10 @@ export class FakeBackend extends MockBackend {
   }
 
   private _verifyExpectation(order: number) {
+    if (!this._expectations[order]) {
+      throw new Error('No expectation to fulfill');
+    }
+
     this._expectations[order].verify(
       this._connections[order]
     );

@@ -24,7 +24,18 @@ export declare class FakeBackend extends MockBackend {
     expectDelete(url: string, body?: string | Object, headers?: Headers | {
         [name: string]: any;
     }): BackendExpectation;
+    expectPatch(url: string, body?: string | Object, headers?: Headers | {
+        [name: string]: any;
+    }): BackendExpectation;
+    expectHead(url: string, headers?: Headers | {
+        [name: string]: any;
+    }): BackendExpectation;
+    expectOptions(url: string, headers?: Headers | {
+        [name: string]: any;
+    }): BackendExpectation;
     flush(): void;
+    verifyNoPendingEpectations(): void;
+    verifyNoPendingRequests(): void;
     private _addExpectation(options);
     private _verifyExpectation(order);
 }
