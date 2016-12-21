@@ -9,7 +9,7 @@ Makes testing Http calls in Angular 2 as easy as were in AngularJS.
 ### Installation
 
 ```bash
-npm install angular2-http-testing --save-dev
+npm install ngx-http-test --save-dev
 ```
 
 ### Usage
