@@ -5,34 +5,35 @@ import { BackendExpectation } from './backend-expectation';
 export declare class FakeBackend extends MockBackend {
     private _connections;
     private _expectations;
-    autoRespond: boolean;
+    private _autoRespond;
     static getProviders(): Provider[];
     constructor();
     setAutoRespond(autoRespond: boolean): void;
-    expect(method: RequestMethod, url: string, body?: string | Object, headers?: Headers | {
+    expect(method: RequestMethod, url: string | RegExp, body?: string | Object, headers?: Headers | {
         [name: string]: any;
     }): BackendExpectation;
-    expectGet(url: string, headers?: Headers | {
+    expectGet(url: string | RegExp, headers?: Headers | {
         [name: string]: any;
     }): BackendExpectation;
-    expectPost(url: string, body?: string | Object, headers?: Headers | {
+    expectPost(url: string | RegExp, body?: string | Object, headers?: Headers | {
         [name: string]: any;
     }): BackendExpectation;
-    expectPut(url: string, body?: string | Object, headers?: Headers | {
+    expectPut(url: string | RegExp, body?: string | Object, headers?: Headers | {
         [name: string]: any;
     }): BackendExpectation;
-    expectDelete(url: string, body?: string | Object, headers?: Headers | {
+    expectDelete(url: string | RegExp, body?: string | Object, headers?: Headers | {
         [name: string]: any;
     }): BackendExpectation;
-    expectPatch(url: string, body?: string | Object, headers?: Headers | {
+    expectPatch(url: string | RegExp, body?: string | Object, headers?: Headers | {
         [name: string]: any;
     }): BackendExpectation;
-    expectHead(url: string, headers?: Headers | {
+    expectHead(url: string | RegExp, headers?: Headers | {
         [name: string]: any;
     }): BackendExpectation;
-    expectOptions(url: string, headers?: Headers | {
+    expectOptions(url: string | RegExp, headers?: Headers | {
         [name: string]: any;
     }): BackendExpectation;
+    flushNext(): void;
     flush(): void;
     verifyNoPendingExpectations(): void;
     verifyNoPendingRequests(): void;

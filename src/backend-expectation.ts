@@ -2,7 +2,7 @@ import { MockConnection } from '@angular/http/testing';
 import { Response, ResponseOptions, RequestMethod, Headers } from '@angular/http';
 
 export interface BackendExpectationOptions {
-  url: string;
+  url: string | RegExp;
   method: RequestMethod;
   headers: Headers;
   body?: string | Object;
@@ -15,28 +15,32 @@ function stringifyBody(body: string | Object) {
 }
 
 export class BackendExpectation {
-  private isVerified = false;
-  private responseOptions: ResponseOptions;
-  private responseError?: Error;
+  private _isVerified = false;
+  private _responseOptions?: ResponseOptions;
+  private _responseError?: Error;
 
-  constructor(private options: BackendExpectationOptions) {}
+  public constructor(private options: BackendExpectationOptions) {}
 
-  getIsVerified() {
-    return this.isVerified;
+  public getIsVerified() {
+    return this._isVerified;
   }
 
-  respond(body: string | Object, status: number = 200, headers?: Headers | { [name: string]: any; }) {
-    this.responseOptions = new ResponseOptions({ status, body, headers: new Headers(headers) });
+  public respond(body: string | Object, status: number = 200, headers?: Headers | { [name: string]: any; }) {
+    this._responseOptions = new ResponseOptions({ status, body, headers: new Headers(headers) });
   }
 
-  respondWithError(error: string | Error) {
-    this.responseError = typeof error === 'string' ? new Error(error) : error;
+  public respondWithError(error: string | Error) {
+    this._responseError = typeof error === 'string' ? new Error(error) : error;
   }
 
-  verify(connection: MockConnection) {
-    this.isVerified = true;
+  public verify(connection: MockConnection) {
+    this._isVerified = true;
+    this._verifyConnection(connection);
+    this._respond(connection);
+  }
 
-    expect(connection.request.url).toEqual(this.options.url, 'Request url mismatch.');
+  private _verifyConnection(connection: MockConnection) {
+    expect(connection.request.url).toMatch(this.options.url, 'Request url mismatch.');
     expect(connection.request.method).toEqual(this.options.method, 'Request method mismatch.');
 
     if (this.options.body) {
@@ -46,16 +50,18 @@ export class BackendExpectation {
     this.options.headers.forEach((values, name) => {
       expect(connection.request.headers.get(name)).toEqual(this.options.headers.get(name), 'Request header mismatch.');
     });
+  }
 
-    if (this.responseError) {
-      return connection.mockError(this.responseError);
+  private _respond(connection: MockConnection) {
+    if (this._responseError) {
+      return connection.mockError(this._responseError);
     }
 
-    if (!this.responseOptions) {
+    if (!this._responseOptions) {
       let responseOptions = new ResponseOptions({ status: 200, body: '' });
       return connection.mockRespond(new Response(responseOptions));
     }
 
-    connection.mockRespond(new Response(this.responseOptions));
+    connection.mockRespond(new Response(this._responseOptions));
   }
 }

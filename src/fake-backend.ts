@@ -3,12 +3,16 @@ import { Http, BaseRequestOptions, RequestMethod, Headers, ReadyState } from '@a
 import { Provider } from '@angular/core';
 import { BackendExpectation, BackendExpectationOptions } from './backend-expectation';
 
+function isConnectionPending(connection: MockConnection) {
+  return connection.readyState === ReadyState.Open;
+}
+
 export class FakeBackend extends MockBackend {
   private _connections: MockConnection[] = [];
   private _expectations: BackendExpectation[] = [];
-  autoRespond = true;
+  private _autoRespond = true;
 
-  static getProviders(): Provider[] {
+  public static getProviders(): Provider[] {
     return [
       FakeBackend,
       BaseRequestOptions,
@@ -22,23 +26,23 @@ export class FakeBackend extends MockBackend {
     ];
   }
 
-  constructor() {
+  public constructor() {
     super();
 
     this.connections.subscribe((connection: MockConnection) => {
       this._connections.push(connection);
 
-      if (this.autoRespond) {
+      if (this._autoRespond) {
         this._verifyExpectation(this._connections.length - 1);
       }
     });
   }
 
-  setAutoRespond(autoRespond: boolean) {
-    this.autoRespond = autoRespond;
+  public setAutoRespond(autoRespond: boolean) {
+    this._autoRespond = autoRespond;
   }
 
-  expect(method: RequestMethod, url: string, body?: string | Object, headers?: Headers | { [name: string]: any; }) {
+  public expect(method: RequestMethod, url: string | RegExp, body?: string | Object, headers?: Headers | { [name: string]: any; }) {
     return this._addExpectation({
       url,
       method,
@@ -47,7 +51,7 @@ export class FakeBackend extends MockBackend {
     });
   }
 
-  expectGet(url: string, headers?: Headers | { [name: string]: any; }) {
+  public expectGet(url: string | RegExp, headers?: Headers | { [name: string]: any; }) {
     return this._addExpectation({
       url,
       method: RequestMethod.Get,
@@ -55,7 +59,7 @@ export class FakeBackend extends MockBackend {
     });
   }
 
-  expectPost(url: string, body?: string | Object, headers?: Headers | { [name: string]: any; }) {
+  public expectPost(url: string | RegExp, body?: string | Object, headers?: Headers | { [name: string]: any; }) {
     return this._addExpectation({
       url,
       method: RequestMethod.Post,
@@ -64,7 +68,7 @@ export class FakeBackend extends MockBackend {
     });
   }
 
-  expectPut(url: string, body?: string | Object, headers?: Headers | { [name: string]: any; }) {
+  public expectPut(url: string | RegExp, body?: string | Object, headers?: Headers | { [name: string]: any; }) {
     return this._addExpectation({
       url,
       method: RequestMethod.Put,
@@ -73,7 +77,7 @@ export class FakeBackend extends MockBackend {
     });
   }
 
-  expectDelete(url: string, body?: string | Object, headers?: Headers | { [name: string]: any; }) {
+  public expectDelete(url: string | RegExp, body?: string | Object, headers?: Headers | { [name: string]: any; }) {
     return this._addExpectation({
       url,
       method: RequestMethod.Delete,
@@ -82,7 +86,7 @@ export class FakeBackend extends MockBackend {
     });
   }
 
-  expectPatch(url: string, body?: string | Object, headers?: Headers | { [name: string]: any; }) {
+  public expectPatch(url: string | RegExp, body?: string | Object, headers?: Headers | { [name: string]: any; }) {
     return this._addExpectation({
       url,
       method: RequestMethod.Patch,
@@ -91,7 +95,7 @@ export class FakeBackend extends MockBackend {
     });
   }
 
-  expectHead(url: string, headers?: Headers | { [name: string]: any; }) {
+  public expectHead(url: string | RegExp, headers?: Headers | { [name: string]: any; }) {
     return this._addExpectation({
       url,
       method: RequestMethod.Head,
@@ -99,7 +103,7 @@ export class FakeBackend extends MockBackend {
     });
   }
 
-  expectOptions(url: string, headers?: Headers | { [name: string]: any; }) {
+  public expectOptions(url: string | RegExp, headers?: Headers | { [name: string]: any; }) {
     return this._addExpectation({
       url,
       method: RequestMethod.Options,
@@ -107,7 +111,16 @@ export class FakeBackend extends MockBackend {
     });
   }
 
-  flush() {
+  public flushNext() {
+    let pendingConnectionIndex = this._connections.findIndex(isConnectionPending);
+    this._verifyExpectation(pendingConnectionIndex);
+  }
+
+  public flush() {
+    if (this._connections.length === 0) {
+      throw new Error('No connections to flush');
+    }
+
     this._connections.forEach((connection, order) => {
       this._verifyExpectation(order);
     });
@@ -122,7 +135,7 @@ export class FakeBackend extends MockBackend {
   }
 
   public verifyNoPendingRequests() {
-    let notVerifiedConnections = this._connections.filter((connection: MockConnection) => connection.readyState === ReadyState.Open);
+    let notVerifiedConnections = this._connections.filter(isConnectionPending);
 
     if (notVerifiedConnections.length > 0) {
       throw new Error(`Pending connections found: ${notVerifiedConnections.length}`);
@@ -138,6 +151,10 @@ export class FakeBackend extends MockBackend {
   private _verifyExpectation(order: number) {
     if (!this._expectations[order]) {
       throw new Error('No expectation to fulfill');
+    }
+
+    if (this._expectations[order].getIsVerified()) {
+      return;
     }
 
     this._expectations[order].verify(

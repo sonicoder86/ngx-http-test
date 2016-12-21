@@ -52,6 +52,8 @@ backend
 
 It is not necessary to give the response, in that case the backend will respond with 200 empty response.
 
+Also the expected url can be given as a regular expression instead of a string.
+
 For requests outside of GET the request body can be also specified.
 
 ```typescript
@@ -89,3 +91,6 @@ it('should call fake endpoint', (done) => {
   backend.flush();
 })
 ```
+
+The ```flush``` method resolves all pending connections.
+It can also be resolved one by one with the ```flushNext``` method.

@@ -93,6 +93,22 @@ describe('GithubServiceRefactored', () => {
     backend.flush();
   });
 
+  it('should respond single request from queue', (done) => {
+    backend.setAutoRespond(false);
+    backend.expectPost(
+      'usernamepassword/login',
+      { username: 'blacksonic', password: 'secret' },
+      { 'Content-Type': 'application/json' }
+    ).respond(responseForm);
+
+    subject.login('blacksonic', 'secret').subscribe((response) => {
+      expect(response).toEqual(responseForm);
+      done();
+    });
+
+    backend.flushNext();
+  });
+
   it('should verify pending expectations', () => {
     backend.expectPost(
       'usernamepassword/login',
@@ -128,5 +144,23 @@ describe('GithubServiceRefactored', () => {
       expect(response).toEqual('');
       done();
     });
+  });
+
+  it('should accept regexp as url', (done) => {
+    backend.expectGet(/users/).respond(profileInfo);
+
+    subject.getProfile('blacksonic').subscribe((response) => {
+      expect(response).toEqual(profileInfo);
+      done();
+    });
+  });
+
+  it('should throw error when no connection to flush', function() {
+    try {
+      backend.flush();
+      throw new Error('should throw');
+    } catch(e) {
+      expect(e.message).toEqual('No connections to flush');
+    }
   });
 });

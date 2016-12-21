@@ -7,16 +7,19 @@ var __extends = (this && this.__extends) || function (d, b) {
 var testing_1 = require("@angular/http/testing");
 var http_1 = require("@angular/http");
 var backend_expectation_1 = require("./backend-expectation");
+function isConnectionPending(connection) {
+    return connection.readyState === http_1.ReadyState.Open;
+}
 var FakeBackend = (function (_super) {
     __extends(FakeBackend, _super);
     function FakeBackend() {
         var _this = _super.call(this) || this;
         _this._connections = [];
         _this._expectations = [];
-        _this.autoRespond = true;
+        _this._autoRespond = true;
         _this.connections.subscribe(function (connection) {
             _this._connections.push(connection);
-            if (_this.autoRespond) {
+            if (_this._autoRespond) {
                 _this._verifyExpectation(_this._connections.length - 1);
             }
         });
@@ -36,7 +39,7 @@ var FakeBackend = (function (_super) {
         ];
     };
     FakeBackend.prototype.setAutoRespond = function (autoRespond) {
-        this.autoRespond = autoRespond;
+        this._autoRespond = autoRespond;
     };
     FakeBackend.prototype.expect = function (method, url, body, headers) {
         return this._addExpectation({
@@ -99,8 +102,15 @@ var FakeBackend = (function (_super) {
             headers: new http_1.Headers(headers)
         });
     };
+    FakeBackend.prototype.flushNext = function () {
+        var pendingConnectionIndex = this._connections.findIndex(isConnectionPending);
+        this._verifyExpectation(pendingConnectionIndex);
+    };
     FakeBackend.prototype.flush = function () {
         var _this = this;
+        if (this._connections.length === 0) {
+            throw new Error('No connections to flush');
+        }
         this._connections.forEach(function (connection, order) {
             _this._verifyExpectation(order);
         });
@@ -112,7 +122,7 @@ var FakeBackend = (function (_super) {
         }
     };
     FakeBackend.prototype.verifyNoPendingRequests = function () {
-        var notVerifiedConnections = this._connections.filter(function (connection) { return connection.readyState === http_1.ReadyState.Open; });
+        var notVerifiedConnections = this._connections.filter(isConnectionPending);
         if (notVerifiedConnections.length > 0) {
             throw new Error("Pending connections found: " + notVerifiedConnections.length);
         }
@@ -125,6 +135,9 @@ var FakeBackend = (function (_super) {
     FakeBackend.prototype._verifyExpectation = function (order) {
         if (!this._expectations[order]) {
             throw new Error('No expectation to fulfill');
+        }
+        if (this._expectations[order].getIsVerified()) {
+            return;
         }
         this._expectations[order].verify(this._connections[order]);
     };
