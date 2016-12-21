@@ -47,7 +47,7 @@ export class FakeBackend extends MockBackend {
     });
   }
 
-  expectGET(url: string, headers?: Headers | { [name: string]: any; }) {
+  expectGet(url: string, headers?: Headers | { [name: string]: any; }) {
     return this._addExpectation({
       url,
       method: RequestMethod.Get,
@@ -113,7 +113,7 @@ export class FakeBackend extends MockBackend {
     });
   }
 
-  public verifyNoPendingEpectations() {
+  public verifyNoPendingExpectations() {
     let notVerifiedExpectations = this._expectations.filter((expectation: BackendExpectation) => !expectation.getIsVerified());
 
     if (notVerifiedExpectations.length > 0) {

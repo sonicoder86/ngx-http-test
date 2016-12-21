@@ -95,7 +95,7 @@ describe('GithubServiceRefactored', () => {
     ).respond(responseForm);
 
     try {
-      backend.verifyNoPendingEpectations();
+      backend.verifyNoPendingExpectations();
       throw new Error('should throw');
     } catch(e) {
       expect(e.message).toEqual('Pending expectations found: 1');
