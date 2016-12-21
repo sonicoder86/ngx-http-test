@@ -12,7 +12,7 @@ export declare class FakeBackend extends MockBackend {
     expect(method: RequestMethod, url: string, body?: string | Object, headers?: Headers | {
         [name: string]: any;
     }): BackendExpectation;
-    expectGET(url: string, headers?: Headers | {
+    expectGet(url: string, headers?: Headers | {
         [name: string]: any;
     }): BackendExpectation;
     expectPost(url: string, body?: string | Object, headers?: Headers | {
@@ -34,7 +34,7 @@ export declare class FakeBackend extends MockBackend {
         [name: string]: any;
     }): BackendExpectation;
     flush(): void;
-    verifyNoPendingEpectations(): void;
+    verifyNoPendingExpectations(): void;
     verifyNoPendingRequests(): void;
     private _addExpectation(options);
     private _verifyExpectation(order);

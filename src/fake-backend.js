@@ -46,7 +46,7 @@ var FakeBackend = (function (_super) {
             headers: new http_1.Headers(headers)
         });
     };
-    FakeBackend.prototype.expectGET = function (url, headers) {
+    FakeBackend.prototype.expectGet = function (url, headers) {
         return this._addExpectation({
             url: url,
             method: http_1.RequestMethod.Get,
@@ -105,7 +105,7 @@ var FakeBackend = (function (_super) {
             _this._verifyExpectation(order);
         });
     };
-    FakeBackend.prototype.verifyNoPendingEpectations = function () {
+    FakeBackend.prototype.verifyNoPendingExpectations = function () {
         var notVerifiedExpectations = this._expectations.filter(function (expectation) { return !expectation.getIsVerified(); });
         if (notVerifiedExpectations.length > 0) {
             throw new Error("Pending expectations found: " + notVerifiedExpectations.length);
