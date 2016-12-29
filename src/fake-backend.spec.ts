@@ -15,6 +15,12 @@ export class GithubService {
       .map((response: Response) => response.json());
   }
 
+  getProfileWithQuery(userName: string) {
+    return this.http
+      .get(`users/${userName}?verbose=true`)
+      .map((response: Response) => response.json());
+  }
+
   login(username: string, password: string) {
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers });
@@ -59,6 +65,15 @@ describe('GithubServiceRefactored', () => {
     backend.expectGet('users/blacksonic').respond(profileInfo);
 
     subject.getProfile('blacksonic').subscribe((response) => {
+      expect(response).toEqual(profileInfo);
+      done();
+    });
+  });
+
+  it('should handle urls with query parameter', (done) => {
+    backend.expectGet('users/blacksonic?verbose=true').respond(profileInfo);
+
+    subject.getProfileWithQuery('blacksonic').subscribe((response) => {
       expect(response).toEqual(profileInfo);
       done();
     });

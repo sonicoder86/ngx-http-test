@@ -40,7 +40,11 @@ export class BackendExpectation {
   }
 
   private _verifyConnection(connection: MockConnection) {
-    expect(connection.request.url).toMatch(this.options.url, 'Request url mismatch.');
+    if (typeof this.options.url === 'string') {
+      expect(connection.request.url).toEqual(this.options.url, 'Request url mismatch.');
+    } else {
+      expect(connection.request.url).toMatch(this.options.url, 'Request url mismatch.');
+    }
     expect(connection.request.method).toEqual(this.options.method, 'Request method mismatch.');
 
     if (this.options.body) {
