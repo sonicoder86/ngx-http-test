@@ -5,6 +5,10 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
 
+function escapeRegExp(str: string) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
+
 @Injectable()
 export class GithubService {
   constructor(private http: Http) {}
@@ -12,6 +16,12 @@ export class GithubService {
   getProfile(userName: string) {
     return this.http
       .get(`users/${userName}`)
+      .map((response: Response) => response.json());
+  }
+
+  searchProfile(userName: string) {
+    return this.http
+      .get(`users?username=${userName}`)
       .map((response: Response) => response.json());
   }
 
@@ -59,6 +69,15 @@ describe('GithubServiceRefactored', () => {
     backend.expectGet('users/blacksonic').respond(profileInfo);
 
     subject.getProfile('blacksonic').subscribe((response) => {
+      expect(response).toEqual(profileInfo);
+      done();
+    });
+  });
+
+  it('should search for a user profile data', (done) => {
+    backend.expectGet(escapeRegExp('users?username=blacksonic')).respond(profileInfo);
+
+    subject.searchProfile('blacksonic').subscribe((response) => {
       expect(response).toEqual(profileInfo);
       done();
     });
