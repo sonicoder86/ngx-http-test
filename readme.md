@@ -56,7 +56,28 @@ backend
 
 It is not necessary to give the response, in that case the backend will respond with 200 empty response.
 
-Also the expected url can be given as a regular expression instead of a string.
+The expected url is a regular expression and not a string. This means that to test GET request's query parameters, you will have to first escape the url for the match to be made correctly.
+
+```typescript
+function escapeRegExp(str: string) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
+
+searchProfile(userName: string) {
+  return this.http
+    .get(`users?username=${userName}`)
+    .map((response: Response) => response.json());
+}
+
+it('should search for a user profile data', (done) => {
+  backend.expectGet(escapeRegExp('users?username=blacksonic')).respond(profileInfo);
+
+  subject.searchProfile('blacksonic').subscribe((response) => {
+    expect(response).toEqual(profileInfo);
+    done();
+  });
+}); 
+```
 
 For requests outside of GET the request body can be also specified.
 
