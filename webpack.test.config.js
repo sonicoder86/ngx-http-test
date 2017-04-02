@@ -22,7 +22,17 @@ module.exports = {
 
   module: {
     loaders: [
-      { test: /\.ts$/, loaders: ['awesome-typescript-loader'] }
+      {
+        test: /\.ts$/,
+        loaders: [
+          {
+            loader: 'awesome-typescript-loader',
+            options: {
+              configFileName: 'tsconfig-test.json'
+            }
+          }
+        ]
+      }
     ]
   },
 
