@@ -1,7 +1,7 @@
 {
   "name": "ngx-http-test",
   "version": "1.2.0",
-  "description": "Angular 2 Http test helper",
+  "description": "Angular Http test helper",
   "main": "index.js",
   "module": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "test-watch": "karma start --no-single-run --auto-watch"
   },
   "keywords": [
-    "angular2",
+    "angular",
     "http",
     "testing"
   ],
@@ -26,32 +26,32 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "@angular/core": "^2.0.0",
-    "@angular/http": "^2.0.0"
+    "@angular/core": "^2.0.0 || >=4.0.0",
+    "@angular/http": "^2.0.0 || >=4.0.0"
   },
   "devDependencies": {
-    "@angular/common": "2.4.0",
-    "@angular/compiler": "2.4.0",
-    "@angular/core": "2.4.0",
-    "@angular/http": "2.4.0",
-    "@angular/platform-browser": "2.4.0",
-    "@angular/platform-browser-dynamic": "2.4.0",
-    "@types/jasmine": "2.5.38",
-    "@types/node": "6.0.52",
-    "awesome-typescript-loader": "3.0.0-beta.17",
-    "core-js": "2.4.1",
-    "jasmine-core": "2.5.2",
-    "karma": "1.3.0",
-    "karma-jasmine": "1.1.0",
-    "karma-phantomjs-launcher": "1.0.2",
-    "karma-sourcemap-loader": "0.3.7",
-    "karma-webpack": "1.8.0",
-    "np": "2.11.0",
-    "rimraf": "2.5.4",
-    "rxjs": "5.0.1",
-    "typescript": "2.1.4",
-    "webpack": "2.1.0-beta.27",
-    "zone.js": "0.7.4"
+    "@angular/common": "~4.0.1",
+    "@angular/compiler": "~4.0.1",
+    "@angular/core": "~4.0.1",
+    "@angular/http": "~4.0.1",
+    "@angular/platform-browser": "~4.0.1",
+    "@angular/platform-browser-dynamic": "~4.0.1",
+    "@types/jasmine": "~2.5.47",
+    "@types/node": "~7.0.12",
+    "awesome-typescript-loader": "~3.1.2",
+    "core-js": "~2.4.1",
+    "jasmine-core": "~2.5.2",
+    "karma": "~1.5.0",
+    "karma-jasmine": "~1.1.0",
+    "karma-phantomjs-launcher": "~1.0.4",
+    "karma-sourcemap-loader": "~0.3.7",
+    "karma-webpack": "~2.0.3",
+    "np": "~2.13.1",
+    "rimraf": "~2.6.1",
+    "rxjs": "~5.2.0",
+    "typescript": "~2.2.2",
+    "webpack": "~2.3.2",
+    "zone.js": "~0.8.5"
   },
   "author": {
     "name": "blacksonic",
