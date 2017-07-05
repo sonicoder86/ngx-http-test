@@ -121,7 +121,7 @@ export class FakeBackend extends MockBackend {
       throw new Error('No connections to flush');
     }
 
-    this._connections.forEach((connection, order) => {
+    this._connections.forEach((_connection, order) => {
       this._verifyExpectation(order);
     });
   }

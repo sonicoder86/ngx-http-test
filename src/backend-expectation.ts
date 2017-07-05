@@ -51,7 +51,7 @@ export class BackendExpectation {
       expect(connection.request.getBody()).toEqual(stringifyBody(this.options.body), 'Request body mismatch.');
     }
 
-    this.options.headers.forEach((values, name) => {
+    this.options.headers.forEach((_values, name) => {
       expect(connection.request.headers.get(name)).toEqual(this.options.headers.get(name), 'Request header mismatch.');
     });
   }
